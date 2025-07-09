@@ -48,41 +48,52 @@
         <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Test Runner" enabled="true">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="parameters"></stringProp>
-          <stringProp name="script">// Clean version: JSR223 Sampler as orchestrator
+          <stringProp name="script">
+import groovy.lang.Binding
+import groovy.lang.GroovyShell
 
-import groovy.io.FileType
+// This script acts as the test runner, similar to test.describe in Playwright.
+// It dynamically loads and executes individual test case scripts.
 
+// Define test cases to run
 def testCases = [
     "get_all_todos_test",
     "get_single_todo_test",
     "add_todo_test",
     "update_todo_test"
-]
+];
 
-log.info "--- DummyJSON API Test Suite Started ---"
+log.info("--- Starting Test Suite: DummyJSON API Tests ---");
 
-def baseDir = System.getProperty("user.dir") + "/jmeter_project/scripts/test_cases"
-
-testCases.eachWithIndex { name, idx ->
-    def file = new File(baseDir, "${name}.groovy")
-    log.info "Running [${idx + 1}/${testCases.size()}]: ${name}"
-
-    if (!file.exists()) {
-        log.error "Missing: ${file.absolutePath}"
-        sampler.setSuccessful(false)
-        return
-    }
-
+testCases.eachWithIndex { testCaseName, index ->
+    log.info("Running Test Case #${index + 1}: ${testCaseName}");
     try {
-        new GroovyShell().evaluate(file)
-        log.info "Success: ${name}"
-    } catch (Exception ex) {
-        log.error "Error in ${name}: ${ex.message}", ex
-        sampler.setSuccessful(false)
+        def scriptFile = new File(System.getProperty("user.dir") + "/jmeter_project/scripts/test_cases/${testCaseName}.groovy");
+        if (scriptFile.exists()) {
+            def binding = new Binding();
+            // Bind JMeter variables to the script context
+            binding.setVariable("vars", vars);
+            binding.setVariable("props", props);
+            binding.setVariable("log", log);
+            binding.setVariable("sampler", sampler);
+            binding.setVariable("ctx", ctx);
+
+            def shell = new GroovyShell(getClass().getClassLoader(), binding); // Use current classloader to inherit classpath
+            shell.evaluate(scriptFile); // Execute the script file
+
+            log.info("Test Case ${testCaseName} completed successfully.");
+        } else {
+            log.error("Test Case script not found: ${testCaseName}.groovy");
+            sampler.setSuccessful(false as boolean); // Mark sampler as failed if script not found
+        }
+
+    } catch (Exception e) {
+        log.error("Error running Test Case ${testCaseName}: " + e.getMessage(), e);
+        sampler.setSuccessful(false as boolean); // Mark sampler as failed on error
     }
 }
 
-log.info "--- DummyJSON API Test Suite Finished ---"
+log.info("--- Test Suite Finished: DummyJSON API Tests ---");
 </stringProp>
           <stringProp name="scriptLanguage">groovy</stringProp>
         </JSR223Sampler>
