@@ -1,2 +1,0 @@
-timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
-1752057749844,401,Test Runner,500,javax.script.ScriptException: groovy.lang.MissingMethodException: No signature of method: org.apache.jmeter.protocol.java.sampler.JSR223Sampler.setSuccessful() is applicable for argument types: (Boolean) values: [false],Users 1-1,text,false,,0,0,1,1,null,0,0,0
