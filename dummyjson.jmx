@@ -6,8 +6,6 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
-      <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Users">
@@ -21,20 +19,6 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Faker">
-          <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="filename"></stringProp>
-          <stringProp name="parameters"></stringProp>
-          <stringProp name="script">import com.github.javafaker.Faker
-
-Faker faker = new Faker()
-
-vars.put(&apos;randomTodo&apos;, faker.hacker.verb() + &quot; the &quot; + faker.hacker.noun())
-vars.put(&apos;randomUID&apos;, faker.number().randomDigit().toString())
-vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
-          <stringProp name="scriptLanguage">groovy</stringProp>
-        </JSR223PreProcessor>
-        <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get - Get All Todos">
           <stringProp name="HTTPSampler.domain">dummyjson.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -48,7 +32,7 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get - Get Singgle Todos" enabled="true">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get - Get Single Todos">
           <intProp name="HTTPSampler.concurrentPool">6</intProp>
           <stringProp name="HTTPSampler.domain">dummyjson.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
@@ -62,7 +46,7 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Post - Add New Todos">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Post - Add New Todos" enabled="true">
           <stringProp name="HTTPSampler.domain">dummyjson.com</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.path">/todos/add</stringProp>
@@ -74,18 +58,20 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&#xd;
-      &quot;todo&quot;: &quot;${randomTodo}&quot;,&#xd;
-      &quot;userId&quot;: ${randomUID},&#xd;
-      &quot;completed&quot;: ${randomBool}&#xd;
-}</stringProp>
+                <stringProp name="Argument.value">
+                {&#xd;
+                  &quot;todo&quot;: &quot;${randomTodo}&quot;,&#xd;
+                  &quot;userId&quot;: ${randomUID},&#xd;
+                  &quot;completed&quot;: ${randomBool}
+                &#xd;}
+                </stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -116,7 +102,7 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -126,6 +112,20 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
           </HeaderManager>
           <hashTree/>
         </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete - Delete todo">
+          <intProp name="HTTPSampler.concurrentPool">6</intProp>
+          <stringProp name="HTTPSampler.domain">dummyjson.com</stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.path">/todos/4</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
@@ -164,6 +164,20 @@ vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Faker">
+        <stringProp name="cacheKey">true</stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="script">import com.github.javafaker.Faker
+
+Faker faker = new Faker()
+
+vars.put(&apos;randomTodo&apos;, faker.hacker.verb() + &quot; the &quot; + faker.hacker.noun())
+vars.put(&apos;randomUID&apos;, faker.number().randomDigit().toString())
+vars.put(&apos;randomBool&apos;, faker.bool().bool().toString())</stringProp>
+        <stringProp name="scriptLanguage">groovy</stringProp>
+      </JSR223PreProcessor>
+      <hashTree/>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
